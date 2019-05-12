@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="keywords" content="remark,remarkjs,markdown,slideshow,presentation" />
+    <meta name="description" content="A simple, in-browser, markdown-driven slideshow tool." />
+    <title>Introduction to Scala / Functional Programming</title>
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif);
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body {
+        font-family: 'Droid Serif';
+      }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: 400;
+        margin-bottom: 0;
+      }
+      .remark-slide-content h1 { font-size: 3em; }
+      .remark-slide-content h2 { font-size: 2em; }
+      .remark-slide-content h3 { font-size: 1.6em; }
+      .footnote {
+        position: absolute;
+        bottom: 3em;
+      }
+      li p { line-height: 1.25em; }
+      .red { color: #fa0000; }
+      .large { font-size: 2em; }
+      a, a > code {
+        color: rgb(249, 38, 114);
+        text-decoration: none;
+      }
+      code {
+        background: #e7e8e2;
+        border-radius: 5px;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .remark-code-line-highlighted     { background-color: #373832; }
+      .pull-left {
+        float: left;
+        width: 47%;
+      }
+      .pull-right {
+        float: right;
+        width: 47%;
+      }
+      .pull-right ~ p {
+        clear: both;
+      }
+      #slideshow .slide .content code {
+        font-size: 0.8em;
+      }
+      #slideshow .slide .content pre code {
+        font-size: 0.9em;
+        padding: 15px;
+      }
+      .inverse {
+        background: #272822;
+        color: #777872;
+        text-shadow: 0 0 20px #333;
+      }
+      .inverse h1, .inverse h2 {
+        color: #f3f3f3;
+        line-height: 0.8em;
+      }
+
+      /* Slide-specific styling */
+      #slide-inverse .footnote {
+        bottom: 12px;
+        left: 20px;
+      }
+      #slide-how .slides {
+        font-size: 0.9em;
+        position: absolute;
+        top:  151px;
+        right: 140px;
+      }
+      #slide-how .slides h3 {
+        margin-top: 0.2em;
+      }
+      #slide-how .slides .first, #slide-how .slides .second {
+        padding: 1px 20px;
+        height: 90px;
+        width: 120px;
+        -moz-box-shadow: 0 0 10px #777;
+        -webkit-box-shadow: 0 0 10px #777;
+        box-shadow: 0 0 10px #777;
+      }
+      #slide-how .slides .first {
+        background: #fff;
+        position: absolute;
+        top: 20%;
+        left: 20%;
+        z-index: 1;
+      }
+      #slide-how .slides .second {
+        position: relative;
+        background: #fff;
+        z-index: 0;
+      }
+
+      /* Two-column layout */
+      .left-column {
+        color: #777;
+        width: 20%;
+        height: 92%;
+        float: left;
+      }
+        .left-column h2:last-of-type, .left-column h3:last-child {
+          color: #000;
+        }
+      .right-column {
+        width: 75%;
+        float: right;
+        padding-top: 1em;
+      }
+      .align-left {
+          text-align: left;
+          left-margin: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+name: inverse
+layout: true
+class: center, middle, inverse
+---
+# Introduction to Scala and
+# Functional Programming
+
+Brian Hsu
+
+---
+# Before we start...
+## Still rember Clean Architecture?
+
+---
+# Vespa Schema Documentation Generator
+
+http://git.ouroath.com/bhsu/VespaSchemaDocGenerator
+
+---
+## 我用了以後頭腦就靈光了很多
+## 每次考試都考一百分
+
+Scala / Functional Programming / Clean Architecture
+
+---
+# We will focus on Scala and
+# Functional Programming this week.
+
+We will talk about Clean Architecture next week
+
+---
+# What is Scala?
+A programming language compile down to Java bytecode and using Java VM as its runtime. .red[*]
+
+.footnote[.red[*] It could also compile to JavaScript / LLVM bytecode now.] 
+
+---
+# What is Scala?
+A .red[**SCALABLE**] language.
+
+---
+layout: false
+.left-column[
+  # Scalable
+  ## REPL
+]
+
+.right-column[
+  Can try anything without launch text editor / IDE...etc. Just a quick interactive shell to try something new.
+
+  ```scala
+Welcome to Scala 2.12.8 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_211).
+Type in expressions for evaluation. Or try :help.
+
+scala> import java.util.Date
+import java.util.Date
+
+scala> import java.text.SimpleDateFormat
+import java.text.SimpleDateFormat
+
+scala> val df = new SimpleDateFormat("yyyyMMdd HH:mm:ss")
+df: java.text.SimpleDateFormat = java.text.SimpleDateFormat@a671bb40
+
+scala> df.format(new Date)
+res0: String = 20190512 14:05:50
+  ```
+]
+---
+
+.left-column[
+  # Scalable
+  ## REPL
+  ## Scripting
+]
+
+.right-column[
+Without a full project structure, just use it as scripting language.
+
+```scala
+// wordcount.scala
+import scala.io.Source
+
+val filename = args(0)
+val lines = Source.fromFile(filename).getLines
+val count = lines.map(_.split("\\s+").size).sum
+
+println(count)
+```
+
+```console
+$ cat testFile.txt
+This is a test file
+with two lines.
+
+$ scala wordcount.scala testFile.text
+8
+```
+]
+
+---
+
+.left-column[
+  # Scalable
+  ## REPL
+  ## Scripting
+  ## Full Program
+]
+
+.right-column[
+Just like tranditional Java programs.
+
+```scala
+object Main {
+  def main(args: Array[String]) {
+    println("Hello, 世界")
+  }
+}
+```
+
+]
+---
+
+.left-column[
+  # Scalable
+  ## Simple
+]
+
+.right-column[
+Just like tranditional Java programs.
+
+```scala
+def factorial(x: Int) = {
+  var sum = 0
+  for (i <- 1 to x) {
+    sum += i
+  }
+  sum
+}
+```
+]
+
+---
+
+.left-column[
+  # Scalable
+  ## Simple
+  ## DSL
+]
+
+.right-column[
+Domain specific language
+
+```scala
+import collection.mutable.Stack
+import org.scalatest._
+
+class ExampleSpec extends FlatSpec with Matchers {
+
+  "A Stack" should "pop values in last-in-first-out order" in {
+    val stack = new Stack[Int]
+    stack.push(1)
+    stack.push(2)
+    stack.pop() should be (2)
+    stack.pop() should be (1)
+  }
+
+  it should "throw NoSuchElementException if an empty stack is popped" in {
+    val emptyStack = new Stack[Int]
+    a [NoSuchElementException] should be thrownBy {
+      emptyStack.pop()
+    } 
+  }
+}
+```
+]
+---
+.left-column[
+  # Scalable
+  ## Simple
+  ## DSL
+  ## 天書
+]
+
+.right-column[
+
+```scala
+// Token
+def blockIdent: Parser[String] = "[^{}\n\r#]+".r
+
+// Line
+def indexing: Parser[SearchDefinition] = positioned("indexing" ~ ":" ~> anything <~ opt(generalComment | newline) ^^ (x => Indexing(x.trim)))
+def fields: Parser[SearchDefinition] = positioned("fields" ~ ":" ~> anything <~ opt(generalComment | newline) ^^ (x => Fields(x.split(",").map(_.trim).toList)))
+def inlineBlock: Parser[SearchDefinition] = positioned(blockIdent ~ "{" ~ opt(indexing | anything ^^ (x => AnyDefinitionLine(x.trim))) <~ "}" ~ (generalComment |  newline) ^^ toInlineBlock)
+def anyDefinitionLine: Parser[SearchDefinition] = positioned(anything <~ (generalComment | newline) ^^ (x => AnyDefinitionLine(x.trim)))
+def parentChild: Parser[SearchDefinition] = positioned("import" ~ "field" ~> "[^\r\n\t. ]+".r ~ "." ~ "[^\r\n\t. ]+".r ~ "as" ~ "[^\r\n\t. ]+".r <~ "{" ~ "}" ~ (generalComment |  newline)  ^^ toParentChild)
+
+// Comment
+def generalComment: Parser[SearchDefinition] = positioned("#[^\n\r]*".r <~ newline ^^ toGeneralComment)
+def sourceComment: Parser[SearchDefinition] = positioned("#" ~ "@source[" ~> "[^\r\n\\[\\]]+".r ~ "]" ~ opt("[" ~ "[^\r\n\\[\\]]+".r ~ "]" ) ~ "[^\r\n]*".r <~ newline ^^ toSourceComment)
+def enumComment: Parser[SearchDefinition] = positioned("#" ~ "@enum[" ~> "[^\r\n\\[\\]]+".r ~ "][" ~ "[^\r\n\\[\\]]+".r ~ "]" ~ "[^\r\n]*".r <~ newline ^^ toEnumComment)
+
+// Block
+def documentBlock: Parser[SearchDefinition] = positioned("document" ~> "[^\r\n\t{} ]+".r ~ opt("inherits" ~ blockIdent) ~ rep(newline) ~ "{" ~ blockContent <~ "}" ~ rep(newline) ^^ toDocument)
+def fieldBlock: Parser[SearchDefinition] =  positioned("field" ~> identifier ~ "type" ~ identifier ~ rep(newline) ~ "{" ~ blockContent <~ "}" ~ rep(newline) ^^ toField)
+def structBlock: Parser[SearchDefinition] =  positioned("struct" ~> blockIdent ~ rep(newline) ~ "{" ~ blockContent <~ "}" ~ rep(newline) ^^ toStruct)
+def structFieldBlock: Parser[SearchDefinition] = positioned("struct-field" ~> blockIdent ~ rep(newline) ~ "{" ~ blockContent <~ "}" ~ rep(newline) ^^ toStructField)
+def rankProfileBlock: Parser[SearchDefinition] = positioned("rank-profile" ~> "[^\r\n\t{} ]+".r ~ opt("inherits" ~ blockIdent) ~ rep(newline) ~ "{" ~ blockContent <~ "}" ~ rep(newline) ^^ toRankProfile)
+def generalBlock: Parser[SearchDefinition] =  positioned(blockIdent ~ rep(newline) ~ "{" ~ blockContent <~ "}" ~ rep(newline) ^^ toGeneralBlock)
+def fieldSetBlock: Parser[SearchDefinition] =  positioned("fieldset" ~> blockIdent ~ rep(newline) ~ "{" ~ blockContent <~ "}" ~ rep(newline) ^^ toFieldSet)
+
+def searchDefinition: Parser[SearchDefinition] = rep(allComments | newline) ~> allBlocks <~ rep(allComments | newline)
+
+// Composite
+def allLines: Parser[Any] = indexing | fields | inlineBlock | anyDefinitionLine | newline
+def allBlocks: Parser[SearchDefinition] = rep(newline) ~> (documentBlock | structFieldBlock | rankProfileBlock | structBlock | fieldSetBlock | fieldBlock | parentChild | generalBlock)
+def blockContent: Parser[List[SearchDefinition]] = rep(allBlocks | allComments | allLines) ^^ flattenComments
+def allComments: Parser[SearchDefinition] = enumComment | sourceComment | generalComment
+
+```
+]
+
+---
+
+template: inverse
+# DSL 或天書都是由函式庫實作
+
+---
+template: inverse
+
+# What is Scala?
+
+A **static** / **strong** typing language with type inference.
+
+---
+template: inverse
+
+# What is Scala?
+
+A object oriented language.
+- operator as method
+- singleton
+- trait
+- case class
+
+---
+template: inverse
+
+# What is Scala?
+
+A functional programming language.
+
+---
+template: inverse
+
+# Is OO / functional work well together?
+- Uncle Bob's statment.
+
+---
+template: inverse
+
+# Programming in Scala
+.bookimg[![programming in scala](https://m.media-amazon.com/images/I/51w1YjEaT-L._AC_UL436_.jpg)]
+.footnote[https://learning.oreilly.com/library/view/programming-in-scala/9780981531687/]
+
+---
+template: inverse
+
+# Let's think a simple Leet Code problem.
+
+.align-left[
+```text
+Given an array of integers A sorted in non-decreasing order, 
+return an array of the squares of each number, also in sorted 
+non-decreasing order.
+
+Example 1:
+
+Input: [-4,-1,0,3,10]
+Output: [0,1,9,16,100]
+
+Example 2:
+
+Input: [-7,-3,2,3,11]
+Output: [4,9,9,49,121]
+
+```
+
+1. What's your solution in mind, time complexity?
+2. Give me a solution that is O(n)
+
+]
+
+---
+template: inverse
+
+# What is .red[Functional] programming?
+嘴巴講完就已經等於把程式碼寫完？
+- O(nlogn) implementation
+- O(n) implementation
+
+---
+template: inverse
+
+# What is .red[Functional] programming?
+- Immutable
+- Function as first-class citizen
+- High-order Functional
+  - Baiscs. (map / flatMap / foldLeft / foldRight)
+  - for-comperhensive
+- Functional Currying
+- Pattern Matching
+
+
+---
+template: inverse
+
+# So...what is Scala?
+- Give you all tools
+- Provide a best practice.
+  - Prefer Immutable
+  - Prefer Functional
+
+---
+name: last-page
+template: inverse
+
+## Let's talk about Clean Architecture next week.
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+    <script>
+      var hljs = remark.highlighter.engine;
+    </script>
+    <script src="https://remarkjs.com/remark.language.js"></script>
+    <script>
+      var slideshow = remark.create({
+          highlightStyle: 'monokai',
+          highlightLanguage: 'remark',
+          highlightLines: true
+        }) ;
+    </script>
+  </body>
+</html>
