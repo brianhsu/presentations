@@ -167,8 +167,8 @@ A .red[**SCALABLE**] language.
 ---
 layout: false
 .left-column[
-  # Scalable
-  ## REPL
+  ## Scalable
+  ### REPL
 ]
 
 .right-column[
@@ -194,9 +194,9 @@ res0: String = 20190512 14:05:50
 ---
 
 .left-column[
-  # Scalable
-  ## REPL
-  ## Scripting
+  ## Scalable
+  ### REPL
+  ### Scripting
 ]
 
 .right-column[
@@ -226,10 +226,10 @@ $ scala wordcount.scala testFile.text
 ---
 
 .left-column[
-  # Scalable
-  ## REPL
-  ## Scripting
-  ## Full Program
+  ## Scalable
+  ### REPL
+  ### Scripting
+  ### Full Program
 ]
 
 .right-column[
@@ -247,8 +247,8 @@ object Main {
 ---
 
 .left-column[
-  # Scalable
-  ## Simple
+  ## Scalable
+  ### Simple
 ]
 
 .right-column[
@@ -268,9 +268,9 @@ def factorial(x: Int) = {
 ---
 
 .left-column[
-  # Scalable
-  ## Simple
-  ## DSL
+  ## Scalable
+  ### Simple
+  ### DSL
 ]
 
 .right-column[
@@ -301,10 +301,10 @@ class ExampleSpec extends FlatSpec with Matchers {
 ]
 ---
 .left-column[
-  # Scalable
-  ## Simple
-  ## DSL
-  ## 天書
+  ## Scalable
+  ### Simple
+  ### DSL
+  ### 天書
 ]
 
 .right-column[
@@ -350,23 +350,386 @@ def allComments: Parser[SearchDefinition] = enumComment | sourceComment | genera
 template: inverse
 # DSL 或天書都是由函式庫實作
 
+Java SE 8 Spec (2014): 788 pages
+
+Scala 2.9 Spec (2014): 191 pages
+
+---
+template: inverse
+
+# Try Scala without install anything!
+
+https://scastie.scala-lang.org/omw4KoxMR6eNATNGo6nP7g
+
+$ brew install scala
+
 ---
 template: inverse
 
 # What is Scala?
 
-A **static** / **strong** typing language with type inference.
+A **static** typing language with type inference.
+
+---
+
+.left-column[
+  ## Typing
+  ### Static Typing 
+]
+
+.right-column[
+All types are checked at compile-time, even in scripting mode.
+
+```scala
+// wordcount.scala
+import scala.io.Source
+
+if (args.length == 0) {
+  println("Usage: scala wordcount.scala [filename]")
+} else {
+  val filename = args(0)
+  val lines = Source.fromFile(filename).getLines
+  val count = lines.map(_.split("\\s+").size).summmm // Woops, there is such method.
+  println(count)
+}
+```
+
+```console
+$ scala wordcount.scala
+/Users/bhsu/wordcount.scala:9: error: value summmm is not a member of Iterator[Int]
+  val count = lines.map(_.split("\\s+").size).summmm // Woops, there is such method.
+                                              ^
+one error found
+```
+]
+---
+
+.left-column[
+  ## Typing
+  ### Static Typing 
+  ### Type Inference
+]
+
+.right-column[
+Type could be inferenced by compiler itself, without annotated by programmers.
+
+Exception:
+  - Method parameters (including constructors)
+  - Recursive method's return type
+
+Without type inference:
+
+```scala
+val zipCode: Map[Int, String] = Map[Int, String](
+  105 -> "松山區", 
+  115 -> "南港區", 
+  100 -> "中正區"
+)
+
+def printZipCode(zipCode: Map[Int, String]): Unit = {
+  for ((code, name) <- zipCode) {
+    println(s"ZipCode[$code]: $name")
+  }
+}
+
+def getName(code: Int): String = zipCode.get(code).getOrElse("查無此郵遞區號")
+
+println(getName(105))
+println(getName(222))
+printZipCode(zipCode)
+
+```
+]
+
+
+---
+
+.left-column[
+  ## Typing
+  ### Static Typing 
+  ### Type Inference
+]
+
+.right-column[
+With type inference:
+
+```scala
+val zipCode = Map(
+  105 -> "松山區", 
+  115 -> "南港區", 
+  100 -> "中正區"
+)
+
+def printZipCode(zipCode: Map[Int, String]) = {
+  for ((code, name) <- zipCode) {
+    println(s"ZipCode[$code]: $name")
+  }
+}
+
+def getName(code: Int) = zipCode.get(code).getOrElse("查無此郵遞區號")
+
+println(getName(105))
+println(getName(222))
+printZipCode(zipCode)
+
+```
+]
 
 ---
 template: inverse
 
 # What is Scala?
 
-A object oriented language.
-- operator as method
-- singleton
-- trait
-- case class
+A object-oriented language.
+
+---
+
+.left-column[
+  ## Object-Oriented
+  ### No operators, just methods
+]
+
+.right-column[
+There is no operator, just objects and methods.
+
+```scala
+scala> val x1 = 1 + 2
+x1: Int = 3
+
+scala> val x2 = 1.+(2)
+x2: Int = 3
+
+scala> val y1 = 5 / 3
+y1: Int = 1
+
+scala> val y2 = 5./(3)
+y2: Int = 1
+
+scala> val z1 = "Hello World" take 5
+z1: String = Hello
+
+scala> val z2 = "Hello World".take(5)
+z2: String = Hello
+
+scala> println(z1 == z2)
+true
+
+scala> println(z1 eq z2)
+false
+
+scala> println(null == z2)
+false
+
+scala> println(null eq z2)
+false
+```
+
+https://scastie.scala-lang.org/RV2cx2WUTnWnAR70LPJzpA
+]
+
+---
+
+.left-column[
+  ## Object-Oriented
+  ### No operators, just methods
+]
+
+.right-column[
+
+Indexing and updating an array is also done by normal methods.
+
+```scala
+scala> val array = Array("Hello", "World!")
+array: Array[String] = Array(Hello, World!)
+
+scala> val elemA = array(0)
+elemA: String = Hello
+
+scala> val elemB = array.apply(0)
+elemB: String = Hello
+
+scala> println(s"elemA = $elemA")
+elemA = Hello
+
+scala> println(s"elemB = $elemB")
+elemB = Hello
+
+scala> array(1) = "World!!!!"
+
+scala> println(s"array(1) = ${array(1)}")
+array(1) = World!!!!
+
+scala> array.update(1, "世界")
+
+scala> println(s"array(1) = ${array(1)}")
+array(1) = 世界
+```
+
+https://scastie.scala-lang.org/kvmAsmYVSYWgb97flxpEbw
+]
+
+---
+
+.left-column[
+  ## Object-Oriented
+  ### No operators, just methods
+]
+
+.right-column[
+
+We could implement it by ourself.
+
+```scala
+import java.util.Date
+
+class MyIndexableObj {
+  def apply(n: String): String = {
+    println("I can index by a String")
+    s"String of [$n]"
+  }
+  def apply(n: Int): Date = {
+    println("I could also index by a Int")
+    new Date(n * 1000L)
+  }
+  def update(n: String, value: String) {
+    println(s"Dummy assign a string value to a string index. $value")
+  }
+  def update(n: Int, value: Date) {
+    println(s"Dummy assign a Date to a Int index: $value")
+  }
+}
+
+val indexable = new MyIndexableObj
+println(indexable("StringIndex"))
+println(indexable(1557662358))
+indexable("SomeStrIndex") = "SomeStringValue"
+indexable(12345678) = new Date
+
+// Compile Error: value should be a String
+// indexable("SomeStrIndex") = 1234
+```
+
+https://scastie.scala-lang.org/g1tbQVVvQpaL1RzeJXmpvA
+]
+
+---
+
+.left-column[
+  ## Object-Oriented
+  ### No operators, just methods
+  ### Singleton
+]
+
+.right-column[
+]
+
+---
+
+.left-column[
+  ## Object-Oriented
+  ### No operators, just methods
+  ### Singleton
+  ### Case Class
+]
+
+.right-column[
+]
+
+---
+
+.left-column[
+  ## Object-Oriented
+  ### No operators, just methods
+  ### Singleton
+  ### Case Class
+  ### Trait
+]
+
+.right-column[
+]
+---
+
+.left-column[
+  ## Object-Oriented
+  ### No operators, just methods
+  ### Singleton
+  ### Case Class
+  ### Trait
+  ### Tuple
+]
+
+.right-column[
+* A data type that has fixed length.
+* Each element could be differnt type.
+* Represent by `TupleN[T1, T2..., TN]` or `(T1, T2..., TN)`
+
+```scala
+scala> val x = (1, "A")
+x: (Int, String) = (1,A)
+
+scala> val y = 1 -> "A"
+y: (Int, String) = (1,A)
+
+scala> val z: Tuple2[Int, String] = new Tuple2(1, "A")
+z: (Int, String) = (1,A)
+
+scala> x == y
+res0: Boolean = true
+
+scala> x == z
+res1: Boolean = true
+
+scala> x._1
+res2: Int = 1
+
+scala> x._2
+res3: String = A
+
+scala> x._3
+<console>:13: error: value _3 is not a member of (Int, String)
+       x._3
+         ^
+```
+https://scastie.scala-lang.org/5H7FqHHHT36pEfYhDY2nXw
+]
+
+---
+
+.left-column[
+  ## Object-Oriented
+  ### No operators, just methods
+  ### Singleton
+  ### Case Class
+  ### Trait
+  ### Tuple
+]
+
+.right-column[
+```scala
+scala> val z = (1, "A", 'B', 3.5, new java.util.Date)
+z: (Int, String, Char, Double, java.util.Date) = (1,A,B,3.5,Sun May 12 20:15:13 CST 2019)
+
+scala> z._1
+res4: Int = 1
+
+scala> z._2
+res5: String = A
+
+scala> z._3
+res6: Char = B
+
+scala> z._4
+res7: Double = 3.5
+
+scala> z._5
+res8: java.util.Date = Sun May 12 20:15:13 CST 2019
+
+scala> z._6
+<console>:13: error: value _6 is not a member of (Int, String, Char, Double, java.util.Date)
+       z._6
+```
+https://scastie.scala-lang.org/RUTya608Tee5ms3HuNIbMA<Paste>
+]
 
 ---
 template: inverse
@@ -461,7 +824,12 @@ template: inverse
       var slideshow = remark.create({
           highlightStyle: 'monokai',
           highlightLanguage: 'remark',
-          highlightLines: true
+          highlightLines: true,
+          navigation: {
+            scroll: false,
+            touch: false,
+            click: false,
+          }
         }) ;
     </script>
   </body>
