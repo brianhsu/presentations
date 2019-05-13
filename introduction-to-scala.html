@@ -12,6 +12,7 @@
 
       body {
         font-family: 'Droid Serif';
+        width: 100%;
       }
       h1, h2, h3 {
         font-family: 'Yanone Kaffeesatz';
@@ -58,7 +59,7 @@
       }
       .inverse {
         background: #272822;
-        color: #777872;
+        color: #CCCCCC;
         text-shadow: 0 0 20px #333;
       }
       .inverse h1, .inverse h2 {
@@ -621,6 +622,28 @@ https://scastie.scala-lang.org/g1tbQVVvQpaL1RzeJXmpvA
 ]
 
 .right-column[
+There is no `static`, just singleton objects.
+
+```scala
+
+object MySingleton {
+  println("Init...")
+
+  var value = 10
+
+  def update(x: Int) {
+    this.value = x
+  }
+}
+
+println("First statement...")
+println(s"MySingleton.value = ${MySingleton.value}")
+val ref: MySingleton.type = MySingleton
+ref.update(3)
+println(s"MySingleton.value = ${MySingleton.value}")
+```
+
+https://scastie.scala-lang.org/BlMVFXzqT1GmDdSmYULoMA
 ]
 
 ---
@@ -629,10 +652,107 @@ https://scastie.scala-lang.org/g1tbQVVvQpaL1RzeJXmpvA
   ## Object-Oriented
   ### No operators, just methods
   ### Singleton
+]
+
+.right-column[
+There is no `static`, just singleton objects.
+
+```scala
+val list1 = List(1, 2, 3, 4)
+val list2 = List.apply(1, 2, 3, 4)
+
+val list3 = 1 :: 2 :: 3 :: 4 :: Nil
+val list4 = Nil.::(4).::(3).::(2).::(1)
+
+println(list1)
+println(list1 == list2)
+println(list1 == list3)
+println(list1 == list4)
+```
+https://scastie.scala-lang.org/88t27ZEJQrCnEcped4b80w
+]
+
+---
+
+.left-column[
+  ## Object-Oriented
+  ### No operators, just methods
+  ### Singleton
+  ### Class
+]
+
+.right-column[
+```scala
+class MyObject(greeting: String, val y: Int, protected val z: Int) {
+  println("This is default constructor, not encouraged")
+
+  def this(greeting: String) = this(greeting, 0, 0)
+
+  def getGreeting(name: String) = greeting + ", " + name
+  def absOfY: Int = {
+    if (y > 0) {
+      y
+    } else {
+      -y
+    }
+  }
+}
+
+val obj = new MyObject("Hello", -20, 3)
+
+println(obj.getGreeting("World"))
+println(obj.absOfY)
+println(obj.y)
+
+// println(obj.greeting) // Compile Error
+// println(obj.z)        // Compile Error
+```
+https://scastie.scala-lang.org/TGPAM4yeR3SKdoGdnxeL5g
+]
+
+
+---
+
+.left-column[
+  ## Object-Oriented
+  ### No operators, just methods
+  ### Singleton
+  ### Class
   ### Case Class
 ]
 
 .right-column[
+
+A magic class that automaticlly done the following thing:
+ - fields in constructor are default to public
+ - toString()
+ - equals()
+ - hashCode()
+ - Factory Method
+ - Support for Pattern Matching
+
+```scala
+class Person(name: String, age: Int)
+case class Student(name: String, age: Int)
+
+val person1 = new Person("Mary", 19)
+val person2 = new Person("Mary", 19)
+val isSamePerson = (person1 == person2)
+println(s"person1 = $person1")
+println(s"isSamePerson: $isSamePerson")
+
+val student1 = new Student("Jack", 20)
+val student2 = Student("Jack", 20)
+val isSameStudent = (student1 == student2)
+println(s"student1 = $student1")
+println(s"isSameStudent: $isSameStudent")
+
+val student3 = student2.copy(age = 30)
+println(s"student2 = $student2")
+println(s"student3 = $student3")
+println(s"student2 == student3 = ${student2 == student3}")
+```
+https://scastie.scala-lang.org/cKqg5FESTyaVQyjanXyPgw
 ]
 
 ---
@@ -641,11 +761,38 @@ https://scastie.scala-lang.org/g1tbQVVvQpaL1RzeJXmpvA
   ## Object-Oriented
   ### No operators, just methods
   ### Singleton
+  ### Class
   ### Case Class
   ### Trait
 ]
 
 .right-column[
+Just like an enhanced `Interface`
+
+```scala
+class BaseClassA
+class BaseClassB
+
+trait TraitA {
+  def methodA: Int
+}
+
+trait TraitB {
+  def methodB(x: Int) = x +10
+}
+
+
+class ClassC extends BaseClassA with TraitA with TraitB {
+  override def methodA = 10
+}
+
+val classC = new ClassC
+println(classC.methodA)
+println(classC.methodB(3))
+```
+
+https://scastie.scala-lang.org/IWw841MaTJyBx4NWqQY8RA
+
 ]
 ---
 
@@ -653,6 +800,52 @@ https://scastie.scala-lang.org/g1tbQVVvQpaL1RzeJXmpvA
   ## Object-Oriented
   ### No operators, just methods
   ### Singleton
+  ### Class
+  ### Case Class
+  ### Trait
+]
+
+.right-column[
+Just like an enhanced `Interface`
+
+```scala
+class BaseClassA
+class BaseClassB
+
+trait TraitB {
+  def methodB(x: Int) = x +10
+}
+
+trait TraitC extends TraitB {
+  def methodC(x: Int) = x * 10
+}
+
+trait TraitD { this: BaseClassB =>
+  def methodD(x: Int) = x / 10
+}
+
+
+class ClassD extends TraitC
+val classD = new ClassD
+println(classD.methodB(10))
+println(classD.methodC(10))
+
+// class ClassE extends TraitD  // Compile Error
+// class ClassF extends BaseClassA with TraitD // Compile Error
+class ClassG extends BaseClassB with TraitD
+```
+
+https://scastie.scala-lang.org/3dNFeYUzT4GEdspgszktYA
+
+]
+
+---
+
+.left-column[
+  ## Object-Oriented
+  ### No operators, just methods
+  ### Singleton
+  ### Class
   ### Case Class
   ### Trait
   ### Tuple
@@ -699,6 +892,7 @@ https://scastie.scala-lang.org/5H7FqHHHT36pEfYhDY2nXw
   ## Object-Oriented
   ### No operators, just methods
   ### Singleton
+  ### Class
   ### Case Class
   ### Trait
   ### Tuple
@@ -742,7 +936,22 @@ A functional programming language.
 template: inverse
 
 # Is OO / functional work well together?
-- Uncle Bob's statment.
+
+---
+template: inverse
+
+## So our reductive definition of OO is:
+
+The technique of using dynamic polymorphism to call functions without the source code of the caller depending upon the source code of the callee.
+
+## So, the reductive definition of functional programming is:
+
+Referential Transparency – no reassignment of values.
+
+## Conclusion
+OO and FP are orthogonal, they are not mutually exclusive.
+
+.footnote[https://blog.cleancoder.com/uncle-bob/2018/04/13/FPvsOO.html<Paste>]
 
 ---
 template: inverse
@@ -784,30 +993,480 @@ template: inverse
 
 # What is .red[Functional] programming?
 嘴巴講完就已經等於把程式碼寫完？
-- O(nlogn) implementation
-- O(n) implementation
+
+- https://scastie.scala-lang.org/brianhsu/cASu5BqGTQK1I1h7lIWAiw/6
+- https://scastie.scala-lang.org/brianhsu/cASu5BqGTQK1I1h7lIWAiw/2
 
 ---
 template: inverse
 
 # What is .red[Functional] programming?
-- Immutable
-- Function as first-class citizen
-- High-order Functional
-  - Baiscs. (map / flatMap / foldLeft / foldRight)
-  - for-comperhensive
-- Functional Currying
-- Pattern Matching
 
+---
+
+.left-column[
+  ## Functional Programming
+  ### Immutable
+]
+
+.right-column[
+- For variables....after it is binded, it cannot be reassignemented.
+
+```scala
+var x = 10
+x = 20
+val y = 10  // You can never reassigment `y` to other value.
+// y = 20   // Compile Error
+```
+
+- For objects...Once you created it, it will never change it's state. New instance is created when the state has chagned.
+  - In Java, `java.util.String` is an immutable object.
+  - In Scala, default collection types are Immutable object. (List / Map / Set)
+
+```scala
+val list1 = 1 :: 2 :: 3 :: Nil
+val list2 = list1.drop(1)
+println(s"list1: $list1")   // List(1,2,3)
+println(s"list2: $list2")   // List(2, 3)
+```
+
+https://scastie.scala-lang.org/brianhsu/7wJKY8rERg640FO26oKORA
+]
+
+---
+
+.left-column[
+  ## Functional Programming
+  ### Immutable
+  ### Function as first-class citizen
+]
+
+.right-column[
+
+### Function? No, it's an object!!
+#### Remeber `apply`?
+
+```scala
+trait Func[T1, T2] {
+  def apply(x: T1): T2
+}
+
+val myFunction = new Func[Int, String] {
+  def apply(x: Int): String = s"See, I am a function received $x as arugment"
+}
+
+val doubleIt: Func[Int, Int] = new Func[Int, Int] {
+  def apply(x: Int) = x * 2
+}
+
+println(myFunction(1))
+println(myFunction(2))
+println(doubleIt(2))
+println(doubleIt(5))
+```
+
+https://scastie.scala-lang.org/brianhsu/WS8eyb95SmekyHYXjYvSIA/2
+]
+
+---
+
+.left-column[
+  ## Functional Programming
+  ### Immutable
+  ### Function as first-class citizen
+]
+
+.right-column[
+
+### Scala provides default function interface...
+- `Function1[T1, R]`, `Function2[T1, T2, R]`..., `Function22[T1, T2..., T22, R]`
+- `(T1) => R`, `(T1, T2) => R`..., `(T1, T2..., T22) => R`
+
+```scala
+val myFunc: Function2[Int, Double, String] = new Function2[Int, Double, String] {
+  override def apply(x1: Int, x2: Double): String = {
+    s"myFunc.Received $x1, $x2"
+  }
+}
+
+println(myFunc(1, 2.5))
+
+val myFunc2: (Int, Double) => String = new Function2[Int, Double, String] {
+  override def apply(x1: Int, x2: Double): String = {
+    s"myFunc2.Received $x1, $x2"
+  }
+}
+
+println(myFunc2(1, 2.5))
+```
+
+https://scastie.scala-lang.org/brianhsu/WS8eyb95SmekyHYXjYvSIA/16
+]
+
+---
+
+.left-column[
+  ## Functional Programming
+  ### Immutable
+  ### Function as first-class citizen
+]
+
+.right-column[
+
+### And syntax sugar to create `FunctionN` instance...
+- `(x1: Int, x2: Double) => { "Implementation" }`
+
+```scala
+val myFunc3: (Int, Double) => String = (x1: Int, x2: Double) => {
+    s"myFunc3.Received $x1, $x2"
+}
+
+println(myFunc3(1, 2.5))
+
+val myFunc4 = (x1: Int, x2: Double) => {
+    s"myFunc4.Received $x1, $x2"
+}
+
+println(myFunc4(1, 2.5))
+```
+
+https://scastie.scala-lang.org/brianhsu/WS8eyb95SmekyHYXjYvSIA/18
+]
+
+---
+
+.left-column[
+  ## Functional Programming
+  ### Immutable
+  ### Function as first-class citizen
+  ### High-order Function
+]
+
+.right-column[
+- Rember, function in Scala is just an object!!
+  - So, lets takes one or more functions as arguments.
+
+```scala
+def filterNot(xs: List[Int], predicate: Int => Boolean) = {
+  var resultList: List[Int] = Nil
+  xs.foreach { element =>
+    if (!predicate(element)) {
+      resultList = element :: resultList
+    }
+  }
+  resultList.reverse
+}
+
+println(filterNot(List(1, 2, 3, 4, 5), x => x % 2 == 0))
+```
+https://scastie.scala-lang.org/brianhsu/7TEIwL99TL2DFEQXbLyHug/5
+]
+
+---
+.left-column[
+  ## Functional Programming
+  ### Immutable
+  ### Function as first-class citizen
+  ### High-order Function
+]
+
+.right-column[
+- Rember, function in Scala is just an object!!
+  - Or...returns a function as its result.
+
+```scala
+def multipleBy(factor: Int): (Int) => Int = (x: Int) => { factor * x }
+
+println(multipleBy(2)(5))
+println(multipleBy(3)(5))
+
+
+val multipleBy2 = multipleBy(2)
+val multipleBy3 = multipleBy(3)
+
+println(multipleBy2(5))
+println(multipleBy3(5))
+```
+https://scastie.scala-lang.org/brianhsu/QyDYuG7MRvKp4r3P6sQ41A/2
+]
+
+
+---
+
+.left-column[
+  ## Functional Programming
+  ### Immutable
+  ### Function as first-class citizen
+  ### High-order Function
+  ### Function Currying
+]
+
+.right-column[
+- A function that returning another function when applied some arguments.
+
+```scala
+def multipleBy(factor: Int)(x: Int) = factor * x
+
+println(multipleBy(2)(5))
+println(multipleBy(3)(5))
+
+
+val multipleBy2 = multipleBy(2)(_)
+val multipleBy3 = multipleBy(3)(_)
+
+println(multipleBy2(5))
+println(multipleBy3(5))
+
+def dividedBy(x: Int, divisor: Int) = x / divisor
+val dividedBy2 = dividedBy(_, 2)
+val dividedBy3 = dividedBy(_, 3)
+
+println(dividedBy2(10))
+println(dividedBy3(18))
+```
+https://scastie.scala-lang.org/brianhsu/7kx4leiYSmOu20HYe05vTw/7
+]
+
+---
+
+.left-column[
+  ## Functional Programming
+  ### Immutable
+  ### Function as first-class citizen
+  ### High-order Function
+  ### Function Currying
+  ### Pattern Matching
+]
+
+.right-column[
+```scala
+case class Person(name: String, age: Int)
+
+def testMatch(input: Any) = input match {
+  case 1 => "Matched as constant"
+  case x: String => s"Matched as same type, its $x"
+  case "Constant String" => "This will have no effect"  
+  case Person("Josh", 13) => "Full matched of a case class"
+  case Person("Josn", _) => "Partial matched of Josh"
+  case Person(_, age) if age > 20 => "I don't care about name, but age must > 20"
+  case Person(name, age) => s"as long as it's a Person, I'm OK. name: $name, age: $age"
+  case x => s"I accepted anything, and I got $x"
+}
+
+println(testMatch(1))
+println(testMatch("HellWorld"))
+println(testMatch("Constant String"))
+println(testMatch(Person("Josh", 13)))
+println(testMatch(Person("Josh", 8)))
+println(testMatch(Person("Marry", 20)))
+println(testMatch(Person("Baby", 1)))
+println(testMatch(3.5))
+```
+https://scastie.scala-lang.org/brianhsu/QyDYuG7MRvKp4r3P6sQ41A/10
+]
+
+---
+
+.left-column[
+  ## Functional Programming
+  ### Immutable
+  ### Function as first-class citizen
+  ### High-order Function
+  ### Function Currying
+  ### Pattern Matching
+  ### for Comprehensions
+]
+
+.right-column[
+```scala
+for (i <- 1 to 10) {
+  println(s"i: $i")
+}
+
+(1 to 10).foreach(i => println(s"i: $i"))
+
+val list1 = for (i <- 1 to 10) yield { i + 100 }
+val list2 = (1 to 10).map(i => i + 100)
+val list3 = (1 to 10).map(_ + 100)
+list1.foreach(println)
+list2.foreach(println)
+list3.foreach(println)
+```
+https://scastie.scala-lang.org/brianhsu/7kx4leiYSmOu20HYe05vTw/13
+]
+
+---
+
+.left-column[
+  ## Functional Programming
+  ### Immutable
+  ### Function as first-class citizen
+  ### High-order Function
+  ### Function Currying
+  ### Pattern Matching
+  ### for Comprehensions
+]
+
+.right-column[
+```scala
+for (i <- 1 to 10 if i % 2 == 0) {
+  println(s"i: $i")
+}
+
+(1 to 10).filter(i => i % 2 == 0).foreach(i => println(s"i: $i"))
+
+val list1 = for (i <- 1 to 10 if i % 2 == 0) yield { i + 100 }
+val list2 = (1 to 10).filter(i => i % 2 == 0).map(i => i + 100)
+val list3 = (1 to 10).filter(_ % 2 == 0).map(_ + 100)
+list1.foreach(println)
+list2.foreach(println)
+list3.foreach(println)
+```
+https://scastie.scala-lang.org/brianhsu/CgsQ8LctToe8RnEUxCQraA/1
+]
+
+---
+
+.left-column[
+  ## Functional Programming
+  ### Immutable
+  ### Function as first-class citizen
+  ### High-order Function
+  ### Function Currying
+  ### Pattern Matching
+  ### for Comprehensions
+]
+
+.right-column[
+```scala
+for {
+  i <- 1 to 9
+  j <- 1 to 9
+} {
+  println(s"$i * $j = ${i * j}")
+}
+
+(1 to 9).foreach {i => 
+  (1 to 9).foreach { j =>
+    println(s"$i * $j = ${i * j}")
+  }
+}
+
+val table1 = for {
+  i <- 1 to 9
+  j <- 1 to 9
+} yield {
+  s"$i * $j = ${i * j}"
+}
+
+val table2 = (1 to 9).flatMap { i =>
+  (1 to 9).map { j =>
+    s"$i * $j = ${i * j}"
+  }
+}
+
+table1.foreach(println)
+table2.foreach(println)
+```
+https://scastie.scala-lang.org/brianhsu/CgsQ8LctToe8RnEUxCQraA/6
+]
+---
+
+.left-column[
+  ## Functional Programming
+  ### Immutable
+  ### Function as first-class citizen
+  ### High-order Function
+  ### Function Currying
+  ### Pattern Matching
+  ### for Comprehensions
+]
+
+.right-column[
+```scala
+case class User(name: String) {
+  def isValidPassword(passwrod: String) = true
+}
+
+case class Ticket(name: String, isDone: Boolean)
+
+val userHolder: Option[User] = Some(User("bhsu"))
+val passwordHolder: Option[String] = Some("hashedPassword")
+val ticketsHolder: Option[List[Ticket]] = Some(List(
+  Ticket("ticket1", true), 
+  Ticket("ticket2", false), 
+  Ticket("ticket3", true))
+)
+
+val doneTickets = for {
+  user <- userHolder
+  password <- passwordHolder if user.isValidPassword(password)
+  tickets <- ticketsHolder
+} yield tickets.filter(_.isDone)
+
+println(doneTickets getOrElse Nil)
+```
+https://scastie.scala-lang.org/brianhsu/Gwj4Wah2QUeEDavpdXSumw/10
+]
 
 ---
 template: inverse
 
 # So...what is Scala?
-- Give you all tools
-- Provide a best practice.
-  - Prefer Immutable
-  - Prefer Functional
+
+---
+
+.left-column[
+  # What is Scala?
+  ## Give you all tools
+]
+
+.right-column[
+- Variables
+  - `val`
+  - `var`
+
+- Collections
+  - `scala.collection.immutable.List` / `scala.collection.immutable.Map` / `scala.collection.immutable.Set` 
+  - `scala.collection.mutable.ListBuffer` / `scala.collection.mutable.Map` / `scala.collection.mutable.Set`
+
+- Control structure
+  - High-order function
+  - for-comprehensions
+  - while loop
+]
+
+---
+
+.left-column[
+  # What is Scala?
+  ## Give you all tools
+  ## But Prefer Immutable
+]
+
+.right-column[
+- Variables
+  - Always choose `val` first
+
+- Collections
+  - Always choose `scala.collection.immutable.List` / `scala.collection.immutable.Map` / `scala.collection.immutable.Set` first.
+
+]
+
+---
+
+.left-column[
+  # What is Scala?
+  ## Give you all tools
+  ## But Prefer Immutable
+  ## And Prefer Functional
+]
+
+.right-column[
+- Control structure
+  - Use High-order function
+  - Use for-comprehensions
+]
 
 ---
 name: last-page
@@ -825,6 +1484,7 @@ template: inverse
           highlightStyle: 'monokai',
           highlightLanguage: 'remark',
           highlightLines: true,
+          ratio: "16:9",
           navigation: {
             scroll: false,
             touch: false,
