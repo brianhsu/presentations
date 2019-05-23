@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="keywords" content="remark,remarkjs,markdown,slideshow,presentation" />
+    <meta name="description" content="A simple, in-browser, markdown-driven slideshow tool." />
+    <title>Introduction to Scala / Functional Programming</title>
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif);
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body {
+        font-family: 'Droid Serif';
+        width: 100%;
+      }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: 400;
+        margin-bottom: 0;
+      }
+      .remark-slide-content h1 { font-size: 3em; }
+      .remark-slide-content h2 { font-size: 2em; }
+      .remark-slide-content h3 { font-size: 1.6em; }
+      .footnote {
+        position: absolute;
+        bottom: 3em;
+      }
+      li p { line-height: 1.25em; }
+      .red { color: #fa0000; }
+      .large { font-size: 2em; }
+      a, a > code {
+        color: rgb(249, 38, 114);
+        text-decoration: none;
+      }
+      code {
+        background: #e7e8e2;
+        border-radius: 5px;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .remark-code-line-highlighted     { background-color: #373832; }
+      .pull-left {
+        float: left;
+        width: 47%;
+      }
+      .pull-right {
+        float: right;
+        width: 47%;
+      }
+      .pull-right ~ p {
+        clear: both;
+      }
+      #slideshow .slide .content code {
+        font-size: 0.8em;
+      }
+      #slideshow .slide .content pre code {
+        font-size: 0.9em;
+        padding: 15px;
+      }
+      .inverse {
+        background: #272822;
+        color: #CCCCCC;
+        text-shadow: 0 0 20px #333;
+      }
+      .inverse h1, .inverse h2 {
+        color: #f3f3f3;
+        line-height: 0.8em;
+      }
+
+      /* Slide-specific styling */
+      #slide-inverse .footnote {
+        bottom: 12px;
+        left: 20px;
+      }
+      #slide-how .slides {
+        font-size: 0.9em;
+        position: absolute;
+        top:  151px;
+        right: 140px;
+      }
+      #slide-how .slides h3 {
+        margin-top: 0.2em;
+      }
+      #slide-how .slides .first, #slide-how .slides .second {
+        padding: 1px 20px;
+        height: 90px;
+        width: 120px;
+        -moz-box-shadow: 0 0 10px #777;
+        -webkit-box-shadow: 0 0 10px #777;
+        box-shadow: 0 0 10px #777;
+      }
+      #slide-how .slides .first {
+        background: #fff;
+        position: absolute;
+        top: 20%;
+        left: 20%;
+        z-index: 1;
+      }
+      #slide-how .slides .second {
+        position: relative;
+        background: #fff;
+        z-index: 0;
+      }
+
+      /* Two-column layout */
+      .left-column {
+        color: #777;
+        width: 20%;
+        height: 92%;
+        float: left;
+      }
+        .left-column h2:last-of-type, .left-column h3:last-child {
+          color: #000;
+        }
+      .right-column {
+        width: 75%;
+        float: right;
+        padding-top: 1em;
+      }
+      .align-left {
+          text-align: left;
+          left-margin: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+name: inverse
+layout: true
+class: center, middle, inverse
+---
+# Clean Architecture
+## Vespa Schema Documentation Generator
+
+Brian Hsu
+
+---
+# Let's try this first!
+## Vespa Schema Documentation Generator
+
+http://git.ouroath.com/bhsu/VespaSchemaDocGenerator
+
+---
+# My Journey to Clean Architecture
+
+- https://www.youtube.com/watch?v=Nsjsiz2A9mg
+- https://www.youtube.com/watch?v=su34EYeQ90E
+- https://www.youtube.com/watch?v=tg5RFeSfBM4
+- Clean Architecture: A Craftsman's Guide to Software Structure and Design
+
+---
+# What the HELL is Clean Architecture code looks like?
+
+.bookimg[![q](https://dvblobcdnjp.azureedge.net//Content/Upload/Popular/Images/2017-06/e99e6b5e-ca6c-4c19-87b7-dfd63db6381a_m.jpg)]
+
+---
+# Disclaimer
+
+This is only my take on Clean Architecture, not the only approach.
+
+---
+# Objective
+
+1. A flexible tool, easy to extend.
+2. Simple to use, has well default value.
+3. Plugin system.
+
+---
+# Most Important Rule
+Core component should not depend on outter component.
+
+.bookimg[![dia](https://cdn-images-1.medium.com/max/600/0*GtcSDT7dNFshDM7c)]
+
+---
+
+# Architecture is Screaming!?
+
+Well, to be honest. I'm not sure if I did this right...
+
+---
+
+.pull-left[
+  ![scream](images/ProjectStructure1.png)
+]
+
+.pull-right[
+  ![scream](images/ProjectStructure2.png)
+]
+
+
+---
+
+# Entities
+
+沒有特別設計，都是慢慢用到就加上來的 case class
+
+---
+
+# So, what is our USE CASE?
+
+---
+
+layout: false
+.left-column[
+  ## Use Case
+  ### Parser
+]
+
+.right-column[
+- 他拿來做什麼用的？
+  * 把 Vespa Application 中的 .sd 檔解析成程式可以處理的資料結構--一顆樹。
+- 做單元測試的時候，我需要知道 .sd 檔放在哪，從哪來嗎？有依賴到外部的資源嗎？
+  * 不用。我需要的是檔案的內容，我只需要字串。
+- 所以這個 Use Case 長什麼樣子？
+
+```scala
+object SearchDefinitionParser extends SearchDefinitionParser {
+
+  def parse(content: String): SearchDefinitionParser.ParseResult[SearchDefinition] = {
+    parseAll(searchDefinition, content)
+  }
+
+  // 所以後來這個 method 根本沒用到……
+  def parseFile(filename: String): SearchDefinitionParser.ParseResult[SearchDefinition] = {
+    parse(Source.fromFile(filename).mkString)
+  }
+}
+
+```
+
+]
+
+---
+
+
+layout: false
+.left-column[
+  ## Use Case
+  ### Parser
+  ### Annotator
+]
+
+.right-column[
+- 他拿來做什麼用的？
+  - 把註解的 Annotation 加到 Schema 的樹上正確的節點上
+- 做單元測試的時候，我需要知道 .sd 檔放在哪，從哪來嗎？
+  - 不用。我需要的是檔案的內容，我只需要 SearchDefinition 物件
+- 所以這個 Use Case 長什麼樣子？
+
+```scala
+class Annotator {
+
+  def annotate[T <: SearchDefinition](definition: T): T = {
+    definition match {
+      case block: Block =>
+        val children = annotateChildren(block.children)
+        block match {
+          case x: GeneralBlock      => x.copy(children = children).setPos(x.pos).asInstanceOf[T]
+          case x: DocumentBlock     => x.copy(children = children).setPos(x.pos).asInstanceOf[T]
+          case x: FieldBlock        => x.copy(children = children).setPos(x.pos).asInstanceOf[T]
+          case x: FieldSetBlock     => x.copy(children = children).setPos(x.pos).asInstanceOf[T]
+          case x: InlineBlock       => x.copy(children = children).setPos(x.pos).asInstanceOf[T]
+          case x: RankProfileBlock  => x.copy(children = children).setPos(x.pos).asInstanceOf[T]
+          case x: StructBlock       => x.copy(children = children).setPos(x.pos).asInstanceOf[T]
+          case x: StructFieldBlock  => x.copy(children = children).setPos(x.pos).asInstanceOf[T]
+        }
+      case nonBlock => nonBlock
+    }
+  }
+}
+```
+]
+
+---
+
+layout: false
+.left-column[
+  ## Use Case
+  ### Parser
+  ### Annotator
+  ### DocumentGenerator
+]
+
+.right-column[
+- 他拿來做什麼用的？
+  - Business Logic
+- 所以這個 Use Case 長什麼樣子？
+  - 請注意這裡參數的型別的全都是 trait (interface) 而非實作
+
+```scala
+class DocumentGenerator(vespaApp: VespaApplicationPackage, presenter: Presenter,
+                        outputStorage: OutputStorage, plugins: List[Plugin] = Nil) {
+
+  def generate(): Unit = {
+    val applicationDocumentation = ApplicationDocumentation("ECSearch", schemaNameToDocumentation)
+    val outputFiles = presenter.render(applicationDocumentation)
+
+    outputFiles.foreach { file =>
+      println(s"Save file ${file.filename}")
+      outputStorage.saveFile(file)
+    }
+  }
+  // ...
+}
+```
+]
+
+---
+
+
+name: last-page
+template: inverse
+
+# 所以這樣真的有用嗎？
+## Let's live coding!
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+    <script>
+      var hljs = remark.highlighter.engine;
+    </script>
+    <script src="https://remarkjs.com/remark.language.js"></script>
+    <script>
+      var slideshow = remark.create({
+          highlightStyle: 'monokai',
+          highlightLanguage: 'remark',
+          highlightLines: true,
+          ratio: "16:9",
+          navigation: {
+            scroll: false,
+            touch: false,
+            click: false,
+          }
+        }) ;
+    </script>
+  </body>
+</html>
